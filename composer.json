@@ -26,13 +26,5 @@
     "psr-4": {
       "ProfitPeak\\Tracking\\": ""
     }
-  },
-  "extra": {
-    "map": [
-      [
-        "*",
-        "ProfitPeak/Tracking"
-      ]
-    ]
   }
 }
