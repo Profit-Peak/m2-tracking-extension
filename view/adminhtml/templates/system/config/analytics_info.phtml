@@ -1,0 +1,52 @@
+<div>
+    <textarea id="analytics-script-field" disabled style="display: none;" rows="3" cols="60"></textarea>
+    <button id="copy-analytics-script" type="button" style="display: none; margin-top: 10px;">Copy to Clipboard</button>
+</div>
+
+<script>
+    require(['jquery', 'uiRegistry'], function ($, registry) {
+        $(document).ready(function () {
+            var analyticsIdField = $('#profitpeak_tracking_settings_analytics_id');
+            var analyticsScriptField = $('#analytics-script-field');
+            var copyButton = $('#copy-analytics-script');
+
+            function updateScriptContent() {
+                var analyticsId = analyticsIdField.val().trim();
+
+                if (analyticsId) {
+                    var pixelUrl = "<?= $block->getAnalyticsJsUrl() ?>";
+                    var scriptTag = '<script src="' + pixelUrl + '?t=' + analyticsId + '><\/script>';
+                    analyticsScriptField.val(scriptTag);
+                    analyticsScriptField.show();
+                    copyButton.show();
+                } else {
+                    analyticsScriptField.hide();
+                    copyButton.hide();
+                }
+            }
+
+            function copyToClipboard() {
+                var textToCopy = analyticsScriptField.val();
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    // Preferred async clipboard API
+                    navigator.clipboard.writeText(textToCopy).then(function() {
+                    }).catch(function(err) {
+                    });
+                } else {
+                    // Fallback for unsupported browsers
+                    analyticsScriptField.prop('disabled', false);
+                    analyticsScriptField[0].select();
+                    document.execCommand('copy');
+                    analyticsScriptField.prop('disabled', true);
+                }
+            }
+
+            updateScriptContent();
+
+            analyticsIdField.on('input', updateScriptContent);
+
+            copyButton.on('click', copyToClipboard);
+        });
+    });
+</script>

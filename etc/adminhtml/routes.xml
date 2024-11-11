@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <admin@profitpeak.io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+	<router id="admin">
+			<route id="profitpeak_tracking" frontName="profitpeak_tracking">
+					<module name="ProfitPeak_Tracking" />
+			</route>
+	</router>
+</config>

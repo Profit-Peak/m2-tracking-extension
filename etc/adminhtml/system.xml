@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <admin@profitpeak.io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Config/etc/system_file.xsd">
+    <system>
+        <tab id="profitpeak" translate="label" sortOrder="500" class="profitpeak-tab">
+            <label>Profit Peak</label>
+        </tab>
+
+        <section id="profitpeak_tracking" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Settings</label>
+            <tab>profitpeak</tab>
+            <resource>ProfitPeak_Tracking::configuration</resource>
+
+            <!-- Group for Installed Extensions -->
+            <group id="installed_extensions" translate="label" type="text" sortOrder="5" showInDefault="1">
+                <label>General</label>
+                <field id="extension_list" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Extension List</label>
+                    <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\Extensions</frontend_model>
+                </field>
+            </group>
+
+            <!-- Group for Settings -->
+            <group id="settings" translate="label" type="text" sortOrder="20" showInDefault="0" showInWebsite="0" showInStore="1">
+                <label>Profit Peak Settings</label>
+
+                <field id="enabled" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Extension Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="license_key" translate="label" type="text" sortOrder="110" showInDefault="0" showInWebsite="0" showInStore="1">
+                    <label>License Key</label>
+                    <comment><![CDATA[Enter the License Key for validation.]]></comment>
+                </field>
+
+                <field id="analytics_id" translate="label" type="text" sortOrder="110" showInDefault="0" showInWebsite="0" showInStore="1">
+                    <label>Analytics ID</label>
+                    <comment><![CDATA[Enter the Analytics ID for tracking.]]></comment>
+                </field>
+
+                <field id="connect_profit_peak" translate="label" type="button" sortOrder="120" showInDefault="0" showInWebsite="0" showInStore="1">
+                    <label>Connect To Profit Peak</label>
+                    <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\System\Config\ConnectProfitPeak</frontend_model>
+                </field>
+
+                <field id="analytics_script" translate="label" type="textarea" sortOrder="121" showInDefault="0" showInWebsite="0" showInStore="1">
+                    <label>For PWA Integration</label>
+                    <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\System\Config\AnalyticsInfo</frontend_model>
+                    <comment><![CDATA[Copy the script above and add it to the head tag of your PWA website for tracking purposes.]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

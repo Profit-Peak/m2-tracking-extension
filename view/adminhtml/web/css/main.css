@@ -1,0 +1,18 @@
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <admin@profitpeak.io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+.config-nav-block.profitpeak-tab strong:before {
+  background: url(../images/profitpeak_logo.png) no-repeat;
+  width: 16px;
+  height: 16px;
+  content: '';
+  display: inline-block;
+  margin-right: 12px;
+  vertical-align: bottom;
+  background-size: contain;
+}

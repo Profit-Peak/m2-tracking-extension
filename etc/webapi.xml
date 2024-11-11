@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <admin@profitpeak.io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../app/code/Magento/Webapi/etc/webapi.xsd">
+    <route method="GET" url="/V1/profitpeak/stores/:store_id/orders">
+        <service class="ProfitPeak\Tracking\Api\OrderSyncInterface" method="list"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route method="GET" url="/V1/profitpeak/stores/:store_id/orders/:order_id">
+        <service class="ProfitPeak\Tracking\Api\OrderSyncInterface" method="getById"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route method="PUT" url="/V1/profitpeak/stores/:store_id/orders">
+        <service class="ProfitPeak\Tracking\Api\OrderSyncInterface" method="updateMany"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route method="GET" url="/V1/profitpeak/stores/:store_id/products">
+        <service class="ProfitPeak\Tracking\Api\ProductSyncInterface" method="list"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route method="GET" url="/V1/profitpeak/stores/:store_id/products/:product_id">
+        <service class="ProfitPeak\Tracking\Api\ProductSyncInterface" method="getById"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route method="PUT" url="/V1/profitpeak/stores/:store_id/products">
+        <service class="ProfitPeak\Tracking\Api\ProductSyncInterface" method="updateMany"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route method="GET" url="/V1/profitpeak/stores/:store_id">
+        <service class="ProfitPeak\Tracking\Api\StoreInterface" method="getById" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/profitpeak/errorlog" method="GET">
+        <service class="ProfitPeak\Tracking\Api\ErrorLogInterface" method="getErrorLog"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    
+    <route url="/V1/profitpeak/removeerrorlog" method="GET">
+        <service class="ProfitPeak\Tracking\Api\ErrorLogInterface" method="removeErrorLog"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+</routes>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Profit Peak
+ * @copyright Copyright Profit Peak (https://profitpeak.io/)
+ * @package Magento 2 Tracking Package
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="tracking_log_cleanup" instance="ProfitPeak\Tracking\Cron\LogCleanup" method="execute">
+            <schedule>0 0 * * *</schedule>
+        </job>
+    </group>
+</config>

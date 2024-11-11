@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <connect@profitpeak-io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <event name="sales_order_save_after">
+        <observer name="profitpeak_sales_order_save_after" instance="ProfitPeak\Tracking\Observer\OrderEvents"/>
+    </event>
+
+    <event name="sales_order_delete_after">
+        <observer name="profitpeak_sales_order_delete_after" instance="ProfitPeak\Tracking\Observer\OrderEvents"/>
+    </event>
+
+    <event name="catalog_product_save_after">
+        <observer name="profitpeak_catalog_product_save_after" instance="ProfitPeak\Tracking\Observer\ProductEvents" />
+    </event>
+
+    <event name="catalog_product_delete_after">
+        <observer name="profitpeak_catalog_product_delete_after" instance="ProfitPeak\Tracking\Observer\ProductEvents" />
+    </event>
+
+
+    <!-- pixel event -->
+    <event name="controller_front_send_response_before">
+        <observer name="profitpeak_graphql_pageview_observer" instance="ProfitPeak\Tracking\Observer\PixelEvent"/>
+    </event>
+</config>

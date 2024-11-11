@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <admin@profitpeak.io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+	<menu>
+		<add id="ProfitPeak_Tracking::menu"
+			title="Profit Peak"
+			translate="title"
+			module="ProfitPeak_Tracking"
+			sortOrder="60"
+			resource="Magento_Backend::content"
+		/>
+
+		<add id="ProfitPeak_Tracking::base"
+			title="Modules"
+			module="ProfitPeak_Tracking"
+			sortOrder="0"
+			parent="ProfitPeak_Tracking::menu"
+			resource="ProfitPeak_Tracking::base"/>
+
+		<add id="ProfitPeak_Tracking::extensions"
+			title="Configuration"
+			module="ProfitPeak_Tracking"
+			sortOrder="1"
+			action="adminhtml/system_config/edit/section/profitpeak_tracking"
+			parent="ProfitPeak_Tracking::base"
+			resource="ProfitPeak_Tracking::extensions"/>
+	</menu>
+</config>

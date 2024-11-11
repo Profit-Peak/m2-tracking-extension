@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <admin@profitpeak.io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Store\Api\Data\StoreInterface">
+        <attribute code="product_count" type="integer" />
+        <attribute code="order_count" type="integer" />
+        <attribute code="weight_unit" type="string" />
+        <attribute code="license_key" type="string" />
+        <attribute code="analytics_id" type="string" />
+        <attribute code="extension_enabled" type="boolean" />
+        <attribute code="has_headless_attribute" type="boolean" />
+        <attribute code="has_pwa_module" type="boolean" />
+        <attribute code="has_theme_id" type="boolean" />
+        <attribute code="timezone" type="string" />
+        <attribute code="currency_code" type="string" />
+    </extension_attributes>
+
+    <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
+        <attribute code="area_code" type="string" />
+        <attribute code="user_agent" type="string" />
+        <attribute code="credit_memos" type="Magento\Sales\Api\Data\CreditmemoInterface[]" />
+    </extension_attributes>
+
+    <extension_attributes for="Magento\Sales\Api\Data\OrderItemInterface">
+        <attribute code="grouped_product" type="Magento\Catalog\Api\Data\ProductInterface" />
+    </extension_attributes>
+
+    <extension_attributes for="Magento\Catalog\Api\Data\ProductInterface">
+        <attribute code="brand" type="string" />
+        <attribute code="variants" type="Magento\Catalog\Api\Data\ProductInterface[]" />
+    </extension_attributes>
+
+    <extension_attributes for="Magento\Sales\Api\Data\CreditmemoItemInterface">
+        <attribute code="order_item" type="Magento\Sales\Api\Data\OrderItemInterface"/>
+    </extension_attributes>
+</config>

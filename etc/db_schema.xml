@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Profit Peak
+*
+* @category  Profit Peak
+* @package   ProfitPeak_Tracking
+* @author    Profit Peak Team <admin@profitpeak.io>
+* @copyright Copyright Profit Peak (https://profitpeak.io/)
+*/
+ -->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="profit_peak_order_sync" resource="default" engine="innodb" comment="Order Sync">
+        <column name="store_id" xsi:type="smallint" unsigned="true" nullable="false" comment="Store ID"/>
+        <column name="order_id" xsi:type="int" unsigned="true" nullable="false" comment="Order ID"/>
+        <column name="sent" xsi:type="smallint" unsigned="true" default="0" comment="Order Sent"/>
+        <column name="status" xsi:type="varchar" length="255" nullable="false" comment="Status"/>
+        <column name="user_agent" xsi:type="text" nullable="true" comment="User Agent"/>
+        <column name="area_code" xsi:type="varchar" length="255" nullable="true" comment="Area Code"/>
+        <column name="created_at" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At"/>
+        <column name="updated_at" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
+        <column name="deleted_at" xsi:type="timestamp" nullable="true" on_update="false" comment="Deleted At"/>
+
+        <constraint xsi:type="unique" referenceId="UQ_STORE_ID_ORDER_ID">
+            <column name="store_id"/>
+            <column name="order_id"/>
+        </constraint>
+    </table>
+
+    <table name="profit_peak_product_sync" resource="default" engine="innodb" comment="Product Sync">
+        <column name="store_id" xsi:type="smallint" unsigned="true" nullable="false" comment="Store ID"/>
+        <column name="product_id" xsi:type="int" unsigned="true" nullable="false" comment="Product ID"/>
+        <column name="sent" xsi:type="smallint" unsigned="true" default="0" comment="Product Sent"/>
+        <column name="status" xsi:type="varchar" length="255" comment="Status"/>
+        <column name="created_at" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="Synced At"/>
+        <column name="updated_at" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="Synced At"/>
+        <column name="deleted_at" xsi:type="timestamp" nullable="true" on_update="false" comment="Deleted At"/>
+
+        <constraint xsi:type="unique" referenceId="UQ_STORE_ID_PRODUCT_ID">
+            <column name="store_id"/>
+            <column name="product_id"/>
+        </constraint>
+    </table>
+</schema>

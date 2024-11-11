@@ -1,0 +1,33 @@
+<button id="connect-profit-peak" type="button">
+    <?php echo __('Connect To Profit Peak'); ?>
+</button>
+
+<script>
+    require(['jquery'], function ($) {
+        $('#connect-profit-peak').on('click', function () {
+            var licenseKey = $('#profitpeak_tracking_settings_license_key').val();
+            var analyticsId = $('#profitpeak_tracking_settings_analytics_id').val();
+            var storeId = '<?php echo $block->getRequest()->getParam('store'); ?>';
+            var saveUrl = '<?php echo $block->getSaveLicenseKeyUrl(); ?>';
+
+            $.ajax({
+                url: saveUrl,
+                type: 'POST',
+                data: {
+                    license_key: licenseKey,
+                    analytics_id: analyticsId,
+                    store_id: storeId
+                },
+                success: function (response) {
+                    if (response.success) {
+                        window.open(response.connect_url, '_blank');
+                    } else {
+                    }
+                },
+                error: function () {
+                    alert('<?php echo __('An error occurred while saving the license key.'); ?>');
+                }
+            });
+        });
+    });
+</script>

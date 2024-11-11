@@ -1,0 +1,38 @@
+{
+  "name": "profitpeak/tracking",
+  "description": "Profit Peak Tracking module for Magento 2.",
+  "keywords": ["magento", "tracking", "profitpeak"],
+  "homepage": "https://profitpeak.io",
+  "type": "magento2-module",
+  "license": "proprietary",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Profit Peak Team",
+      "email": "admin@profitpeak.io",
+      "homepage": "https://profitpeak.io",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.3",
+    "ext-dom": "*",
+    "magento/framework": "^103.0 || ^104.0"
+  },
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "ProfitPeak\\Tracking\\": ""
+    }
+  },
+  "extra": {
+    "map": [
+      [
+        "*",
+        "ProfitPeak/Tracking"
+      ]
+    ]
+  }
+}
