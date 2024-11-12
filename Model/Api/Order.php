@@ -225,7 +225,7 @@ class Order implements OrderSyncInterface
                         $productType = $productCode !== null ? $productOptions['super_product_config'][$productCode] : null;
                         $productId = $productOptions['super_product_config']['product_id'] ?? null;
 
-                        if ($productType === $productGroupedType && !empty($productId)) {
+                        if ($productType === 'grouped' && !empty($productId)) {
                             $groupedProduct = $this->productRepository->getById($productId);
 
                             if (!empty($groupedProduct)) {
@@ -245,7 +245,7 @@ class Order implements OrderSyncInterface
                         ->addFilter('order_id', $order->getEntityId(), 'eq')
                         ->create()
                 )->getItems();
-                
+
                 $extension->setCreditMemos($creditMemos);
 
                 $order->setExtensionAttributes($extension);
@@ -267,7 +267,7 @@ class Order implements OrderSyncInterface
     }
 
     public function updateMany($store_id)
-    {   
+    {
         $data = ['success' => false];
         $body = $this->request->getContent();
         try {

@@ -85,7 +85,7 @@ class LoadCreditmemoItemExtensionsAttributes
             $productType = $productCode !== null ? $productOptions['super_product_config'][$productCode] : null;
             $productId = $productOptions['super_product_config']['product_id'] ?? null;
 
-            if ($productType === $productGroupedType && !empty($productId)) {
+            if ($productType === 'grouped' && !empty($productId)) {
                 $groupedProduct = $this->productRepository->getById($productId);
 
                 if (!empty($groupedProduct)) {
