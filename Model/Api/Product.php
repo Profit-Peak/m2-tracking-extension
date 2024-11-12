@@ -179,6 +179,21 @@ class Product implements ProductSyncInterface
             // Process each product and format the response like the native API
             $productsArray = [];
             foreach ($unsyncedProducts as $product) {
+                $extensionAttributes = $product->getExtensionAttributes();
+                if ($extensionAttributes === null) {
+                    $extensionAttributes = $this->productRepository->getExtensionAttributesFactory()->create();
+                }
+
+                if ($product->getTypeId() === 'bundle') {
+                    // Check if dynamic pricing is enabled for the bundle product
+                    $dynamicPrice = $product->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC;
+                    $extensionAttributes->setDynamicPrice($dynamicPrice);
+                } else {
+                    $extensionAttributes->setDynamicPrice(false);
+                }
+
+                $product->setExtensionAttributes($extensionAttributes);
+                
                 $productData = $this->dataObjectProcessor->buildOutputDataArray(
                     $product,
                     ProductInterface::class
