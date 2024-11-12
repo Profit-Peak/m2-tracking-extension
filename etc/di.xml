@@ -10,15 +10,6 @@
 */
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="ProfitPeak\Tracking\Logger\CustomLogger">
-        <arguments>
-            <argument name="name" xsi:type="string">custom</argument>
-            <argument name="handlers" xsi:type="array">
-                <item name="custom_handler" xsi:type="object">ProfitPeak\Tracking\Logger\CustomHandler</item>
-            </argument>
-        </arguments>
-    </type>
-
     <preference for="ProfitPeak\Tracking\Api\OrderSyncInterface" type="ProfitPeak\Tracking\Model\Api\Order"/>
     <preference for="ProfitPeak\Tracking\Api\ProductSyncInterface" type="ProfitPeak\Tracking\Model\Api\Product"/>
     <preference for="ProfitPeak\Tracking\Api\StoreInterface" type="ProfitPeak\Tracking\Model\Api\Store"/>

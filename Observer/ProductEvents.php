@@ -12,7 +12,7 @@ namespace ProfitPeak\Tracking\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\ResourceConnection;
-use ProfitPeak\Tracking\Logger\CustomLogger;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class ProductEvents implements ObserverInterface
 {
@@ -22,13 +22,13 @@ class ProductEvents implements ObserverInterface
     protected $resourceConnection;
 
     /**
-     * @var CustomLogger
+     * @var ProfitPeakLogger
      */
     protected $logger;
 
     public function __construct(
         ResourceConnection $resourceConnection,
-        CustomLogger $logger,
+        ProfitPeakLogger $logger,
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;

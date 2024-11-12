@@ -14,7 +14,7 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Framework\HTTP\ClientInterface;
 
 use ProfitPeak\Tracking\Helper\Config;
-use ProfitPeak\Tracking\Logger\CustomLogger;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class Pixel extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -24,14 +24,14 @@ class Pixel extends \Magento\Framework\App\Helper\AbstractHelper
     protected $client;
 
     /**
-     * @var CustomLogger
+     * @var ProfitPeakLogger
      */
     protected $logger;
 
     public function __construct(
         Context $context,
         ClientInterface $client,
-        CustomLogger $logger
+        ProfitPeakLogger $logger
     ) {
         $this->client = $client;
         $this->logger = $logger;
@@ -85,7 +85,11 @@ class Pixel extends \Magento\Framework\App\Helper\AbstractHelper
 
             $this->client->post(Config::PROFIT_PEAK_PIXEL_URL, json_encode($data));
         } catch (\Throwable $e) {
-            $this->logger->info('Helper send pixel error - '. $e->getMessage());
+            // Log the error message along with the data being sent
+            $this->logger->error('Helper send pixel error - ' . $e->getMessage(), [
+                'data' => $data,
+                'exception' => $e
+            ]);
         }
     }
 }

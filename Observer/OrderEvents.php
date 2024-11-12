@@ -21,7 +21,7 @@ use Magento\Store\Model\StoreManagerInterface;
 
 use ProfitPeak\Tracking\Helper\Pixel;
 use ProfitPeak\Tracking\Helper\Data;
-use ProfitPeak\Tracking\Logger\CustomLogger;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class OrderEvents implements ObserverInterface
 {
@@ -76,7 +76,7 @@ class OrderEvents implements ObserverInterface
     protected $helper;
 
     /**
-     * @var CustomLogger
+     * @var ProfitPeakLogger
      */
     protected $logger;
 
@@ -88,7 +88,7 @@ class OrderEvents implements ObserverInterface
         StoreManagerInterface $storeManager,
         RequestInterface $request,
         State $state,
-        CustomLogger $logger,
+        ProfitPeakLogger $logger,
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->pixel = $pixel;

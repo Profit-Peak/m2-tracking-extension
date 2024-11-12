@@ -20,7 +20,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\RequestInterface;
 use ProfitPeak\Tracking\Helper\Data;
 use ProfitPeak\Tracking\Helper\Pixel;
-use ProfitPeak\Tracking\Logger\CustomLogger;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class PixelEvent implements ObserverInterface
 {
@@ -65,7 +65,7 @@ class PixelEvent implements ObserverInterface
     protected $state;
 
     /**
-     * @var CustomLogger
+     * @var ProfitPeakLogger
      */
     protected $logger;
 
@@ -78,7 +78,7 @@ class PixelEvent implements ObserverInterface
         Pixel $pixel,
         Registry $registry,
         State $state,
-        CustomLogger $logger,
+        ProfitPeakLogger $logger,
     ) {
         $this->request = $request;
         $this->checkoutSession = $checkoutSession;
@@ -168,23 +168,14 @@ class PixelEvent implements ObserverInterface
         }
 
         // Skip if it's a redirect (3xx status codes)
-        if ($response->getStatusCode() >= 300 && $response->getStatusCode() < 400) {
+        if ($response->getStatusCode() >= 300) {
             return true;
         }
 
         // Skip static files, media, etc.
         $pathInfo = $this->request->getPathInfo();
         $skipPaths = [
-            '/static/',
-            '/media/',
-            '/pub/',
-            '/favicon.ico',
-            '.js',
-            '.css',
-            '.jpg',
-            '.jpeg',
-            '.png',
-            '.gif'
+            '/favicon.ico'
         ];
 
         foreach ($skipPaths as $skipPath) {

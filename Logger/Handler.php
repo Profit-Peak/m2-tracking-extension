@@ -9,6 +9,7 @@ class Handler extends StreamHandler
     public function __construct()
     {
         $logFile = BP . '/var/log/profitpeak_error.log'; // Log file path
-        parent::__construct($logFile, Logger::ERROR);
+        $logLevel = Logger::INFO;
+        parent::__construct($logFile, $logLevel);
     }
 }

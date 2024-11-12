@@ -25,6 +25,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Webapi\Exception;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class Order implements OrderSyncInterface
 {
@@ -78,6 +79,11 @@ class Order implements OrderSyncInterface
      */
     protected $productRepository;
 
+    /**
+     * @var ProfitPeakLogger
+     */
+    protected $logger;
+
     public function __construct(
         Data $helper,
         ResourceConnection $resource,
@@ -88,7 +94,8 @@ class Order implements OrderSyncInterface
         CreditmemoRepositoryInterface $creditmemoRepository,
         ProductRepositoryInterface $productRepository,
         OrderExtensionFactory $extensionFactory,
-        OrderItemExtensionFactory $itemExtensionFactory
+        OrderItemExtensionFactory $itemExtensionFactory,
+        ProfitPeakLogger $logger
     ) {
         $this->helper = $helper;
         $this->resource = $resource;
@@ -100,6 +107,7 @@ class Order implements OrderSyncInterface
         $this->productRepository = $productRepository;
         $this->extensionFactory = $extensionFactory;
         $this->itemExtensionFactory = $itemExtensionFactory;
+        $this->logger = $logger;
     }
 
     public function list($store_id)
@@ -256,17 +264,17 @@ class Order implements OrderSyncInterface
     }
 
     public function updateMany($store_id)
-    {
+    {   
         $data = ['success' => false];
+        $body = $this->request->getContent();
         try {
-            $body = $this->request->getContent();
             $postData = json_decode($body, true);
 
             if (!is_array($postData)) {
                 $data['message'] = 'Body required to be an array';
                 return $this->helper->sendJsonResponse($data, Exception::HTTP_BAD_REQUEST);
             }
-            $connection = $this->resource->getConnection();
+            $connectionz = $this->resource->getConnection();
             $orderSyncTable = $this->resource->getTableName('profit_peak_order_sync');
 
             foreach ($postData as $order) {
@@ -290,6 +298,7 @@ class Order implements OrderSyncInterface
 
         } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
+            $this->logger->error("Error updating order: " . $e->getMessage() . "\nBody:\n" . json_encode(json_decode($body), JSON_PRETTY_PRINT));
         }
 
         return $this->helper->sendJsonResponse($data);

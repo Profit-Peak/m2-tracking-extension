@@ -21,6 +21,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Webapi\Exception;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class Product implements ProductSyncInterface
 {
@@ -54,13 +55,19 @@ class Product implements ProductSyncInterface
      */
     protected $dataObjectProcessor;
 
+    /**
+     * @var ProfitPeakLogger
+     */
+    protected $logger;
+
     public function __construct(
         Data $helper,
         ResourceConnection $resource,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ProductRepositoryInterface $productRepository,
         RequestInterface $request,
-        DataObjectProcessor $dataObjectProcessor
+        DataObjectProcessor $dataObjectProcessor,
+        ProfitPeakLogger $logger
     ) {
         $this->helper = $helper;
         $this->resource = $resource;
@@ -68,6 +75,7 @@ class Product implements ProductSyncInterface
         $this->productRepository = $productRepository;
         $this->request = $request;
         $this->dataObjectProcessor = $dataObjectProcessor;
+        $this->logger = $logger;
     }
 
 
@@ -193,9 +201,9 @@ class Product implements ProductSyncInterface
     public function updateMany($store_id)
     {
         $data = ['success' => false];
+        $body = $this->request->getContent();
 
         try {
-            $body = $this->request->getContent();
             $postData = json_decode($body, true);
 
             if (!is_array($postData)) {
@@ -228,6 +236,7 @@ class Product implements ProductSyncInterface
 
         } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
+            $this->logger->error("Error updating order: " . $e->getMessage() . "\nBody:\n" . json_encode(json_decode($body), JSON_PRETTY_PRINT));
         }
 
         return $this->helper->sendJsonResponse($data);
