@@ -71,9 +71,9 @@ class LoadCreditmemoItemExtensionsAttributes
 
         $orderItem = $this->orderItemRepository->get($entity->getOrderItemId());
 
-        $productGroupedType = 'grouped';
+        $productType = $orderItem->getProductType();
 
-        if ($orderItem->getProductType() === $productGroupedType) {
+        if ($productType === 'grouped') {
             $productOptions = $orderItem->getProductOptions();
             $itemExtension = $orderItem->getExtensionAttributes();
 
@@ -92,6 +92,10 @@ class LoadCreditmemoItemExtensionsAttributes
                     $itemExtension->setGroupedProduct($groupedProduct);
                 }
             }
+        } else if ($productType === 'bundle') {
+            $product = $this->productRepository->getById($orderItem->getProductId());
+            $dynamicPrice = $product->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC;
+            $extension->setDynamicPrice($dynamicPrice);
         }
 
         $extension->setOrderItem($orderItem);

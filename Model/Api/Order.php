@@ -212,28 +212,31 @@ class Order implements OrderSyncInterface
                 $items = $order->getItems();
 
                 foreach ($items as $item) {
-                    $productGroupedType = 'grouped';
-                    if ($item->getProductType() !== $productGroupedType) {
-                        continue;
-                    }
-
-                    $productOptions = $item->getProductOptions();
+                    $productType = $item->getProductType();
                     $itemExtension = $item->getExtensionAttributes();
+                    if ($productType === 'grouped') {
+                        $productOptions = $item->getProductOptions();
 
-                    if ($itemExtension === null) {
-                        $itemExtension = $this->itemExtensionFactory->create();
-                    }
-
-                    $productCode = $productOptions['super_product_config']['product_code'] ?? null;
-                    $productType = $productCode !== null ? $productOptions['super_product_config'][$productCode] : null;
-                    $productId = $productOptions['super_product_config']['product_id'] ?? null;
-
-                    if ($productType === $productGroupedType && !empty($productId)) {
-                        $groupedProduct = $this->productRepository->getById($productId);
-
-                        if (!empty($groupedProduct)) {
-                            $itemExtension->setGroupedProduct($groupedProduct);
+                        if ($itemExtension === null) {
+                            $itemExtension = $this->itemExtensionFactory->create();
                         }
+
+                        $productCode = $productOptions['super_product_config']['product_code'] ?? null;
+                        $productType = $productCode !== null ? $productOptions['super_product_config'][$productCode] : null;
+                        $productId = $productOptions['super_product_config']['product_id'] ?? null;
+
+                        if ($productType === $productGroupedType && !empty($productId)) {
+                            $groupedProduct = $this->productRepository->getById($productId);
+
+                            if (!empty($groupedProduct)) {
+                                $itemExtension->setGroupedProduct($groupedProduct);
+                            }
+                        }
+                    } else if ($productType === 'bundle') {
+                        $product = $this->productRepository->getById($item->getProductId());
+                        $itemExtension->setDynamicPrice($product->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC);
+                    } else {
+                        continue;
                     }
                 }
 
@@ -242,7 +245,7 @@ class Order implements OrderSyncInterface
                         ->addFilter('order_id', $order->getEntityId(), 'eq')
                         ->create()
                 )->getItems();
-
+                
                 $extension->setCreditMemos($creditMemos);
 
                 $order->setExtensionAttributes($extension);
