@@ -277,7 +277,7 @@ class Order implements OrderSyncInterface
                 $data['message'] = 'Body required to be an array';
                 return $this->helper->sendJsonResponse($data, Exception::HTTP_BAD_REQUEST);
             }
-            $connectionz = $this->resource->getConnection();
+            $connection = $this->resource->getConnection();
             $orderSyncTable = $this->resource->getTableName('profit_peak_order_sync');
 
             foreach ($postData as $order) {
