@@ -101,7 +101,7 @@ class Data extends AbstractHelper
     public function getVersion()
     {
         // Get the path to the module's composer.json file
-        $modulePath = $this->directoryList->getRoot() . '/app/code/ProfitPeak/Tracking/composer.json';
+        $modulePath = $this->directoryList->getRoot() . '/vendor/profitpeak/tracking/composer.json';
 
         if (!file_exists($modulePath)) {
             throw new Exception(__('Missing composer.json'), 0, Exception::HTTP_INTERNAL_ERROR);
