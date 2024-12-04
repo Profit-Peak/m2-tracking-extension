@@ -45,27 +45,29 @@ class Variants extends \Magento\Framework\App\Helper\AbstractHelper
 
     protected function buildConfigVariants($product)
     {
-        $childIds = $product->getTypeInstance()->getChildrenIds($product->getId());
-
         $variants = [];
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        if ($childIds) {
-            if (isset($childIds[0])) {
-                $productCollection = $this->_productCollectionFactory->create();
-                $productCollection->addAttributeToSelect('id')
-                    ->addAttributeToSelect('name')
-                    ->addAttributeToSelect('sku')
-                    ->addAttributeToSelect('price')
-                    ->addAttributeToSelect('special_price')
-                    ->addAttributeToSelect('status')
-                    ->addAttributeToSelect('visibility')
-                    ->addAttributeToSelect('type_id')
-                    ->addAttributeToSelect('created_at')
-                    ->addAttributeToSelect('updated_at')
-                    ->addAttributeToSelect('manufacturer')
-                    ->addAttributeToSelect('weight');
-                $productCollection->addIdFilter($childIds[0]);
-                $variants = $productCollection->getItems();
+        if($product && $product->getId()) {
+            $childIds = $product->getTypeInstance()->getChildrenIds($product->getId());
+
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            if ($childIds) {
+                if (isset($childIds[0])) {
+                    $productCollection = $this->_productCollectionFactory->create();
+                    $productCollection->addAttributeToSelect('id')
+                        ->addAttributeToSelect('name')
+                        ->addAttributeToSelect('sku')
+                        ->addAttributeToSelect('price')
+                        ->addAttributeToSelect('special_price')
+                        ->addAttributeToSelect('status')
+                        ->addAttributeToSelect('visibility')
+                        ->addAttributeToSelect('type_id')
+                        ->addAttributeToSelect('created_at')
+                        ->addAttributeToSelect('updated_at')
+                        ->addAttributeToSelect('manufacturer')
+                        ->addAttributeToSelect('weight');
+                    $productCollection->addIdFilter($childIds[0]);
+                    $variants = $productCollection->getItems();
+                }
             }
         }
         return $variants;
@@ -74,15 +76,16 @@ class Variants extends \Magento\Framework\App\Helper\AbstractHelper
     protected function buildBundleVariants($product)
     {
         $variants = [];
+        if($product && $product->getId()) {
+            $optionsCollection = $product->getTypeInstance(true)->getSelectionsCollection(
+                $product->getTypeInstance(true)->getOptionsIds($product),
+                $product
+            );
 
-        $optionsCollection = $product->getTypeInstance(true)->getSelectionsCollection(
-            $product->getTypeInstance(true)->getOptionsIds($product),
-            $product
-        );
-
-        foreach ($optionsCollection as $options) {
-            if ($options->getTypeId() === 'simple') {
-                $variants[] = $options;
+            foreach ($optionsCollection as $options) {
+                if ($options->getTypeId() === 'simple') {
+                    $variants[] = $options;
+                }
             }
         }
         return $variants;
@@ -91,11 +94,12 @@ class Variants extends \Magento\Framework\App\Helper\AbstractHelper
     protected function buildGroupedVariants($product)
     {
         $variants = [];
-
-        $options = $product->getTypeInstance(true)->getAssociatedProducts($product);
-        foreach ($options as $option) {
-            if ($option->getTypeId() === 'simple') {
-                $variants[] = $option;
+        if($product && $product->getId()) {
+            $options = $product->getTypeInstance(true)->getAssociatedProducts($product);
+            foreach ($options as $option) {
+                if ($option->getTypeId() === 'simple') {
+                    $variants[] = $option;
+                }
             }
         }
         return $variants;

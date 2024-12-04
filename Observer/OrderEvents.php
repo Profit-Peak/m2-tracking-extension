@@ -115,6 +115,9 @@ class OrderEvents implements ObserverInterface
                     $this->handleOrderCreation($order);
                 }
             }
+
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
         } catch (\Throwable $e) {
             $this->logger->info('Order event observer error - '. $e->getMessage());
         }
@@ -133,6 +136,8 @@ class OrderEvents implements ObserverInterface
                 ->where('store_id = ?', $storeId);
 
             return $this->connection->fetchOne($select);
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
         } catch (\Throwable $e) {
             $this->logger->info('Order event getOrder() error - '. $e->getMessage());
         }
@@ -245,6 +250,9 @@ class OrderEvents implements ObserverInterface
                     'status'
                 ]);
             }
+
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
         } catch (\Throwable $e) {
             $this->logger->info('Order event updateProductSync() error - '. $e->getMessage());
         }

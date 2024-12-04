@@ -47,6 +47,8 @@ class ProductEvents implements ObserverInterface
                 $product = $event->getProduct();
                 $this->handleProductDeletion($product);
             }
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
         } catch (\Throwable $e) {
             $this->logger->info('Product event observer error - '. $e->getMessage());
         }
@@ -70,6 +72,8 @@ class ProductEvents implements ObserverInterface
                 ],
                 ['product_id = ?' => $productId]
             );
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
         } catch (\Throwable $e) {
             $this->logger->info('Product event handleProductSave() error - '. $e->getMessage());
         }
@@ -93,6 +97,8 @@ class ProductEvents implements ObserverInterface
                 ],
                 ['product_id = ?' => $productId]
             );
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
         } catch (\Throwable $e) {
             $this->logger->info('Product event handleProductDeletion() error - '. $e->getMessage());
         }

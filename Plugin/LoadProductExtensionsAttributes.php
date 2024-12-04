@@ -15,6 +15,7 @@ use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 
 use ProfitPeak\Tracking\Helper\Variants;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class LoadProductExtensionsAttributes
 {
@@ -34,6 +35,12 @@ class LoadProductExtensionsAttributes
     private $variantsHelper;
 
     /**
+     * @var ProfitPeakLogger
+     */
+    private $logger;
+
+
+    /**
      * @param Variants $extensionFactory
      * @param StockRegistryInterface $extensionFactory
      * @param ProductExtensionFactory $extensionFactory
@@ -41,11 +48,13 @@ class LoadProductExtensionsAttributes
     public function __construct(
         Variants $variantsHelper,
         StockRegistryInterface $stockRegistry,
-        ProductExtensionFactory $extensionFactory
+        ProductExtensionFactory $extensionFactory,
+        ProfitPeakLogger $logger
     ) {
         $this->variantsHelper = $variantsHelper;
         $this->stockRegistry = $stockRegistry;
         $this->extensionFactory = $extensionFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -59,26 +68,32 @@ class LoadProductExtensionsAttributes
         ProductInterface $entity,
         ProductExtensionInterface $extension = null
     ) {
-        if ($extension === null) {
-            $extension = $this->extensionFactory->create();
-        }
-
-        $brand = $entity->getAttributeText('manufacturer');
-        if ($brand) {
-            $extension->setBrand($brand);
-        }
-
-        $extension->setVariants($this->variantsHelper->getVariants($entity));
-
-        if ($extension->getStockItem() === null) {
-            $stockItem = $this->stockRegistry->getStockItem($entity->getId());
-
-            if ($stockItem) {
-                $extension->setStockItem($stockItem);
+        try {
+            if ($extension === null) {
+                $extension = $this->extensionFactory->create();
             }
+
+            $brand = $entity->getAttributeText('manufacturer');
+            if ($brand) {
+                $extension->setBrand($brand);
+            }
+
+            $extension->setVariants($this->variantsHelper->getVariants($entity));
+
+            if ($extension->getStockItem() === null) {
+                $stockItem = $this->stockRegistry->getStockItem($entity->getId());
+
+                if ($stockItem) {
+                    $extension->setStockItem($stockItem);
+                }
+            }
+
+
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
+        } catch (\Throwable $e) {
+            $this->logger->info('General error - '. $e->getMessage());
         }
-
-
         return $extension;
     }
 }
