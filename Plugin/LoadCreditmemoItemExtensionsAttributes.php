@@ -15,6 +15,7 @@ use Magento\Sales\Api\Data\CreditmemoItemExtensionFactory;
 use Magento\Sales\Api\Data\OrderItemExtensionFactory;
 use Magento\Sales\Api\OrderItemRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class LoadCreditmemoItemExtensionsAttributes
 {
@@ -39,6 +40,11 @@ class LoadCreditmemoItemExtensionsAttributes
     protected $productRepository;
 
     /**
+     * @var ProfitPeakLogger
+     */
+    private $logger;
+
+    /**
      * @param CreditmemoItemExtensionFactory $extensionFactory
      * @param OrderItemRepositoryInterface $orderItemRepository
      */
@@ -47,11 +53,13 @@ class LoadCreditmemoItemExtensionsAttributes
         OrderItemRepositoryInterface $orderItemRepository,
         OrderItemExtensionFactory $itemExtensionFactory,
         ProductRepositoryInterface $productRepository,
+        ProfitPeakLogger $logger
     ) {
         $this->extensionFactory = $extensionFactory;
         $this->orderItemRepository = $orderItemRepository;
         $this->itemExtensionFactory = $itemExtensionFactory;
         $this->productRepository = $productRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -65,41 +73,46 @@ class LoadCreditmemoItemExtensionsAttributes
         CreditmemoItemInterface $entity,
         CreditmemoItemExtensionInterface $extension = null
     ) {
-        if ($extension === null) {
-            $extension = $this->extensionFactory->create();
-        }
-
-        $orderItem = $this->orderItemRepository->get($entity->getOrderItemId());
-
-        $productType = $orderItem->getProductType();
-
-        if ($productType === 'grouped') {
-            $productOptions = $orderItem->getProductOptions();
-            $itemExtension = $orderItem->getExtensionAttributes();
-
-            if ($itemExtension === null) {
-                $itemExtension = $this->itemExtensionFactory->create();
+        try {
+            if ($extension === null) {
+                $extension = $this->extensionFactory->create();
             }
 
-            $productCode = $productOptions['super_product_config']['product_code'] ?? null;
-            $productType = $productCode !== null ? $productOptions['super_product_config'][$productCode] : null;
-            $productId = $productOptions['super_product_config']['product_id'] ?? null;
+            $orderItem = $this->orderItemRepository->get($entity->getOrderItemId());
 
-            if ($productType === 'grouped' && !empty($productId)) {
-                $groupedProduct = $this->productRepository->getById($productId);
+            $productType = $orderItem->getProductType();
 
-                if (!empty($groupedProduct)) {
-                    $itemExtension->setGroupedProduct($groupedProduct);
+            if ($productType === 'grouped') {
+                $productOptions = $orderItem->getProductOptions();
+                $itemExtension = $orderItem->getExtensionAttributes();
+
+                if ($itemExtension === null) {
+                    $itemExtension = $this->itemExtensionFactory->create();
                 }
+
+                $productCode = $productOptions['super_product_config']['product_code'] ?? null;
+                $productType = $productCode !== null ? $productOptions['super_product_config'][$productCode] : null;
+                $productId = $productOptions['super_product_config']['product_id'] ?? null;
+
+                if ($productType === 'grouped' && !empty($productId)) {
+                    $groupedProduct = $this->productRepository->getById($productId);
+
+                    if (!empty($groupedProduct)) {
+                        $itemExtension->setGroupedProduct($groupedProduct);
+                    }
+                }
+            } else if ($productType === 'bundle') {
+                $product = $this->productRepository->getById($orderItem->getProductId());
+                $dynamicPrice = $product->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC;
+                $extension->setDynamicPrice($dynamicPrice);
             }
-        } else if ($productType === 'bundle') {
-            $product = $this->productRepository->getById($orderItem->getProductId());
-            $dynamicPrice = $product->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC;
-            $extension->setDynamicPrice($dynamicPrice);
+
+            $extension->setOrderItem($orderItem);
+        } catch (\Zend_Db_Adapter_Exception $e) {
+            $this->logger->info('Database error occurred - '. $e->getMessage());
+        } catch (\Throwable $e) {
+            $this->logger->info('General error - '. $e->getMessage());
         }
-
-        $extension->setOrderItem($orderItem);
-
         return $extension;
     }
 }
