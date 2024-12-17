@@ -15,7 +15,7 @@
 
                 if (analyticsId) {
                     var pixelUrl = "<?= $block->getAnalyticsJsUrl() ?>";
-                    var scriptTag = '<script src="' + pixelUrl + '?t=' + analyticsId + '><\/script>';
+                    var scriptTag = '<script src="' + pixelUrl + '?t=' + analyticsId + '"><\/script>';
                     analyticsScriptField.val(scriptTag);
                     analyticsScriptField.show();
                     copyButton.show();

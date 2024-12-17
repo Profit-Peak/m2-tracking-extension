@@ -54,7 +54,7 @@
                 </field>
 
                 <field id="analytics_script" translate="label" type="textarea" sortOrder="121" showInDefault="0" showInWebsite="0" showInStore="1">
-                    <label>For PWA Integration</label>
+                    <label>For PWA Storefront Tracking</label>
                     <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\System\Config\AnalyticsInfo</frontend_model>
                     <comment><![CDATA[Copy the script above and add it to the head tag of your PWA website for tracking purposes.]]></comment>
                 </field>

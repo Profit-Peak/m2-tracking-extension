@@ -25,6 +25,17 @@
             <column name="store_id"/>
             <column name="order_id"/>
         </constraint>
+
+        <index referenceId="IDX_ORDER_SENT_UPDATED" indexType="btree">
+            <column name="order_id"/>
+            <column name="sent"/>
+            <column name="updated_at"/>
+        </index>
+
+        <index referenceId="IDX_STORE_CREATED_AT" indexType="btree">
+            <column name="store_id"/>
+            <column name="created_at"/>
+        </index>
     </table>
 
     <table name="profit_peak_product_sync" resource="default" engine="innodb" comment="Product Sync">
@@ -40,5 +51,11 @@
             <column name="store_id"/>
             <column name="product_id"/>
         </constraint>
+
+        <index referenceId="IDX_PRODUCT_SENT_UPDATED" indexType="btree">
+            <column name="product_id"/>
+            <column name="sent"/>
+            <column name="updated_at"/>
+        </index>
     </table>
 </schema>
