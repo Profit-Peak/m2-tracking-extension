@@ -187,7 +187,7 @@ class OrderEvents implements ObserverInterface
                 $this->storeManager->getStore(),
                 $pageTitle,
                 (new \DateTime())->format(\DateTime::ATOM),
-                'order_placed',
+                'webhook-order-create',
                 $order->getRemoteIp(),
                 $quoteId,
                 $customerSession,
@@ -198,7 +198,7 @@ class OrderEvents implements ObserverInterface
 
             $this->pixel->sendPixel($pixel);
         } catch (\Throwable $e) {
-            $this->logger->info('Order event handleOrderCreation() error - '. $e->getMessage());
+            $this->logger->info('Order '.($order ? $order->getId() : null).' handleOrderCreation() error - '. $e->getMessage());
         }
     }
 
