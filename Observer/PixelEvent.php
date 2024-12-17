@@ -96,7 +96,7 @@ class PixelEvent implements ObserverInterface
             /** @var ResponseHttp $response */
             $response = $observer->getEvent()->getResponse();
             $url = $this->request->getUriString();
-            $eventName = 'page_view';
+            $eventName = 'page_viewed';
 
             if ($this->state->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
                 return;
