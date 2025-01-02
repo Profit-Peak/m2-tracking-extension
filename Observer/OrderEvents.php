@@ -108,6 +108,8 @@ class OrderEvents implements ObserverInterface
     {
         try {
             $order = $observer->getEvent()->getOrder();
+
+
             if ($order) {
                 if ($this->getOrder($order)) {
                     $this->handleOrderUpdate($order);
@@ -193,7 +195,11 @@ class OrderEvents implements ObserverInterface
                 $customerSession,
                 null,
                 $order,
-                isset($requestContent['operationName']) ? $requestContent['variables']['cartId'] : session_id(),
+                isset($requestContent['operationName'])
+                ? (isset($requestContent['variables']['cartId'])
+                    ? $requestContent['variables']['cartId']
+                    : ($requestContent['variables']['cart_id'] ?? session_id()))
+                : session_id()
             );
 
             $this->pixel->sendPixel($pixel);
