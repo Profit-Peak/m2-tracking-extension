@@ -75,7 +75,6 @@ class Pixel extends \Magento\Framework\App\Helper\AbstractHelper
         ];
     }
 
-
     public function sendPixel($data)
     {
         try {
@@ -83,7 +82,7 @@ class Pixel extends \Magento\Framework\App\Helper\AbstractHelper
                 'Content-Type' => 'application/json'
             ]);
 
-            $this->client->post(Config::PROFIT_PEAK_PIXEL_URL, json_encode($data));
+            $this->client->post(Config::PROFIT_PEAK_TRACK_URL, json_encode($data));
         } catch (\Throwable $e) {
             // Log the error message along with the data being sent
             $this->logger->error('Helper send pixel error - ' . $e->getMessage(), [

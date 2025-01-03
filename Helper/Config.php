@@ -16,5 +16,6 @@ class Config
     const XML_PATH_FEATURE_ENABLED = 'profitpeak_tracking/settings/enabled';
     const PROFIT_PEAK_URL = "https://app.profitpeak.io/api/auth/callback/magento2?";
     const PROFIT_PEAK_PIXEL_URL = "https://cdn.profitpeak.io/pixel/m2/pixel.min.js";
+    const PROFIT_PEAK_TRACK_URL = "https://track.profitpeak.io/pixel/m2";
     const MAX_LIMIT = 500;
 }
