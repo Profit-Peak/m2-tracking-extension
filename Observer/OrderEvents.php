@@ -183,6 +183,7 @@ class OrderEvents implements ObserverInterface
 
             // Send pixel event
             $pixel = $this->pixel->formatPixelEvent(
+                'custom',
                 $this->helper->getAnalyticsId($this->storeManager->getStore()->getId()),
                 $url,
                 $this->request->getServer(),
@@ -191,15 +192,15 @@ class OrderEvents implements ObserverInterface
                 (new \DateTime())->format(\DateTime::ATOM),
                 'webhook-order-create',
                 $order->getRemoteIp(),
-                $quoteId,
-                $customerSession,
-                null,
-                $order,
                 isset($requestContent['operationName'])
                 ? (isset($requestContent['variables']['cartId'])
                     ? $requestContent['variables']['cartId']
-                    : ($requestContent['variables']['cart_id'] ?? session_id()))
-                : session_id()
+                    : ($requestContent['variables']['cart_id'] ?? $quoteId ))
+                : $quoteId,
+                $customerSession,
+                null,
+                $order,
+                null
             );
 
             $this->pixel->sendPixel($pixel);
