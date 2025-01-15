@@ -108,7 +108,7 @@ class PixelEvent implements ObserverInterface
             }
 
             // Skip REST & GraphQL requests
-            if (str_contains($url, 'graphql?query') || str_contains($url, 'rest/')) {
+            if (str_contains($url, 'graphql?') || str_contains($url, 'rest/')) {
                 return true;
             }
 
@@ -139,6 +139,7 @@ class PixelEvent implements ObserverInterface
             $currentProduct = $this->registry->registry('current_product');
 
             $pixel = $this->pixel->formatPixelEvent(
+                'standard',
                 $this->helper->getAnalyticsId($this->storeManager->getStore()->getId()),
                 $url,
                 $this->request->getServer(),

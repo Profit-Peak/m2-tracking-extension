@@ -39,14 +39,14 @@ class Pixel extends \Magento\Framework\App\Helper\AbstractHelper
         parent::__construct($context);
     }
 
-    public function formatPixelEvent($analyticsId, $url, $server, $store, $pageTitle, $timestamp, $eventName, $ip, $quoteId, $customerSession, $product, $order = null, $clientId = null)
+    public function formatPixelEvent($type, $analyticsId, $url, $server, $store, $pageTitle, $timestamp, $eventName, $ip, $quoteId, $customerSession, $product, $order = null, $clientId = null)
     {
         if($order) {
             $billingAddress = $order->getBillingAddress();
         }
         return [
             "name" => $eventName,
-            "type" => "standard",
+            "type" => $type,
             "userId" => session_id(),
             "analyticsId" => $analyticsId,
             "clientId" => $clientId,
