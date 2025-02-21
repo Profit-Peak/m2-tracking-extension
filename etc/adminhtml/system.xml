@@ -31,32 +31,48 @@
 
             <!-- Group for Settings -->
             <group id="settings" translate="label" type="text" sortOrder="20" showInDefault="0" showInWebsite="0" showInStore="1">
-                <label>Profit Peak Settings</label>
-
+                <label>General Settings</label>
                 <field id="enabled" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Extension Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="license_key" translate="label" type="text" sortOrder="110" showInDefault="0" showInWebsite="0" showInStore="1">
+                <field id="license_key" translate="label" type="text" sortOrder="130" showInDefault="0" showInWebsite="0" showInStore="1">
                     <label>License Key</label>
                     <comment><![CDATA[Enter the License Key for validation.]]></comment>
                 </field>
 
-                <field id="analytics_id" translate="label" type="text" sortOrder="110" showInDefault="0" showInWebsite="0" showInStore="1">
+                <field id="analytics_id" translate="label" type="text" sortOrder="140" showInDefault="0" showInWebsite="0" showInStore="1">
                     <label>Analytics ID</label>
                     <comment><![CDATA[Enter the Analytics ID for tracking.]]></comment>
                 </field>
 
-                <field id="connect_profit_peak" translate="label" type="button" sortOrder="120" showInDefault="0" showInWebsite="0" showInStore="1">
+                <field id="connect_profit_peak" translate="label" type="button" sortOrder="150" showInDefault="0" showInWebsite="0" showInStore="1">
                     <label>Connect To Profit Peak</label>
                     <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\System\Config\ConnectProfitPeak</frontend_model>
                 </field>
 
-                <field id="analytics_script" translate="label" type="textarea" sortOrder="121" showInDefault="0" showInWebsite="0" showInStore="1">
+                <field id="analytics_script" translate="label" type="textarea" sortOrder="160" showInDefault="0" showInWebsite="0" showInStore="1">
                     <label>For PWA Storefront Tracking</label>
                     <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\System\Config\AnalyticsInfo</frontend_model>
                     <comment><![CDATA[Copy the script above and add it to the head tag of your PWA website for tracking purposes.]]></comment>
+                </field>
+            </group>
+
+            <group id="sync" translate="label" type="text" sortOrder="30" showInDefault="0" showInWebsite="0" showInStore="1">
+                <label>Sync Settings</label>
+                <field id="price_attribute" translate="label" type="select" sortOrder="200" showInDefault="0" showInWebsite="0" showInStore="1" >
+                    <label>Select Price Attribute</label>
+                    <source_model>ProfitPeak\Tracking\Model\Config\Source\PriceAttributes</source_model>
+                    <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\System\Config\PriceAttribute</frontend_model>
+                    <comment><![CDATA[Choose which product price attribute to use.]]></comment>
+                </field>
+
+                <field id="cost_attribute" translate="label" type="select" sortOrder="210" showInDefault="0" showInWebsite="0" showInStore="1">
+                    <label>Select Cost Attribute</label>
+                    <source_model>ProfitPeak\Tracking\Model\Config\Source\PriceAttributes</source_model>
+                    <frontend_model>ProfitPeak\Tracking\Block\Adminhtml\System\Config\CostAttribute</frontend_model>
+                    <comment><![CDATA[Choose which product cost attribute to use.]]></comment>
                 </field>
             </group>
         </section>
