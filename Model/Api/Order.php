@@ -274,7 +274,6 @@ class Order implements OrderSyncInterface
 
                         // Fetch the product data
                         $product = $this->productRepository->getById($productId);
-                        $creditMemoItem->setBaseCost($product->getData($costAttribute));
 
                         $orderItemExtension = $creditMemoItem->getExtensionAttributes();
                         if ($orderItemExtension === null) {
