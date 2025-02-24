@@ -25,6 +25,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Webapi\Exception;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use ProfitPeak\Tracking\Logger\ProfitPeakLogger;
 
 class Order implements OrderSyncInterface
@@ -84,6 +85,11 @@ class Order implements OrderSyncInterface
      */
     protected $logger;
 
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
     public function __construct(
         Data $helper,
         ResourceConnection $resource,
@@ -95,7 +101,8 @@ class Order implements OrderSyncInterface
         ProductRepositoryInterface $productRepository,
         OrderExtensionFactory $extensionFactory,
         OrderItemExtensionFactory $itemExtensionFactory,
-        ProfitPeakLogger $logger
+        ProfitPeakLogger $logger,
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->helper = $helper;
         $this->resource = $resource;
@@ -108,6 +115,7 @@ class Order implements OrderSyncInterface
         $this->extensionFactory = $extensionFactory;
         $this->itemExtensionFactory = $itemExtensionFactory;
         $this->logger = $logger;
+        $this->scopeConfig = $scopeConfig;
     }
 
     public function list($store_id)
@@ -150,6 +158,13 @@ class Order implements OrderSyncInterface
     {
         $version = $this->helper->getVersion();
         $data = ['version' => $version, 'data' => []];
+
+        $costAttribute = $this->scopeConfig->getValue(
+            'profitpeak_tracking/sync/cost_attribute',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $store_id ?? 1
+        ) ?? 'cost';
+
         $connection = $this->resource->getConnection();
         $orderTable = $this->resource->getTableName('sales_order');
         $orderSyncTable = $this->resource->getTableName('profit_peak_order_sync');
@@ -214,12 +229,16 @@ class Order implements OrderSyncInterface
                 foreach ($items as $item) {
                     $productType = $item->getProductType();
                     $itemExtension = $item->getExtensionAttributes();
+                    $product = $this->productRepository->getById($item->getProductId());
+
+                    if ($itemExtension === null) {
+                        $itemExtension = $this->itemExtensionFactory->create();
+                    }
+
+                    $itemExtension->setCost($product->getData($costAttribute));
+
                     if ($productType === 'grouped') {
                         $productOptions = $item->getProductOptions();
-
-                        if ($itemExtension === null) {
-                            $itemExtension = $this->itemExtensionFactory->create();
-                        }
 
                         $productCode = $productOptions['super_product_config']['product_code'] ?? null;
                         $productType = $productCode !== null ? $productOptions['super_product_config'][$productCode] : null;
@@ -233,7 +252,6 @@ class Order implements OrderSyncInterface
                             }
                         }
                     } else if ($productType === 'bundle') {
-                        $product = $this->productRepository->getById($item->getProductId());
                         $itemExtension->setDynamicPrice($product->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC);
                     } else {
                         continue;
@@ -245,6 +263,34 @@ class Order implements OrderSyncInterface
                         ->addFilter('order_id', $order->getEntityId(), 'eq')
                         ->create()
                 )->getItems();
+
+                foreach ($creditMemos as $creditMemo) {
+                    foreach ($creditMemo->getItems() as $creditMemoItem) {
+                        $productId = $creditMemoItem->getProductId();
+
+                        if (!$productId) {
+                            continue; // Skip items without a product ID
+                        }
+
+                        // Fetch the product data
+                        $product = $this->productRepository->getById($productId);
+                        $creditMemoItem->setBaseCost($product->getData($costAttribute));
+
+                        $orderItemExtension = $creditMemoItem->getExtensionAttributes();
+                        if ($orderItemExtension === null) {
+                            $orderItemExtension = $this->itemExtensionFactory->create();
+                        }
+                        $orderItem = $orderItemExtension->getOrderItem();
+                        $orderItemExtension->setCost($product->getData($costAttribute));
+
+                        $extenstionOrderItemExtension = $orderItem->getExtensionAttributes();
+                        if ($extenstionOrderItemExtension === null) {
+                            $extenstionOrderItemExtension = $this->itemExtensionFactory->create();
+                        }
+                        $extenstionOrderItemExtension->setCost($product->getData($costAttribute));
+
+                    }
+                }
 
                 $extension->setCreditMemos($creditMemos);
 

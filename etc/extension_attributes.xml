@@ -33,16 +33,21 @@
     <extension_attributes for="Magento\Sales\Api\Data\OrderItemInterface">
         <attribute code="grouped_product" type="Magento\Catalog\Api\Data\ProductInterface" />
         <attribute code="dynamic_price" type="boolean" />
+        <attribute code="cost" type="string" />
     </extension_attributes>
 
     <extension_attributes for="Magento\Catalog\Api\Data\ProductInterface">
         <attribute code="dynamic_price" type="boolean" />
         <attribute code="brand" type="string" />
+        <attribute code="categories" type="string[]" />
         <attribute code="variants" type="Magento\Catalog\Api\Data\ProductInterface[]" />
+        <attribute code="price" type="string" />
+        <attribute code="cost" type="string" />
     </extension_attributes>
 
     <extension_attributes for="Magento\Sales\Api\Data\CreditmemoItemInterface">
         <attribute code="order_item" type="Magento\Sales\Api\Data\OrderItemInterface"/>
         <attribute code="dynamic_price" type="boolean" />
+        <attribute code="cost" type="string" />
     </extension_attributes>
 </config>
