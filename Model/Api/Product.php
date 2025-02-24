@@ -240,22 +240,15 @@ class Product implements ProductSyncInterface
                 }
 
                 $extensionAttributes->setCategories($product->getData('categories') ?? []);
+                $extensionAttributes->setPrice($product->getData($priceAttribute) ?? []);
+                $extensionAttributes->setCost($product->getData($costAttribute) ?? []);
+
                 $product->setExtensionAttributes($extensionAttributes);
 
                 $productData = $this->dataObjectProcessor->buildOutputDataArray(
                     $product,
                     ProductInterface::class
                 );
-
-                // Explicitly update price
-                if (!isset($productData['price'])) {
-                    $productData['price'] = $product->getData($priceAttribute);
-                }
-
-                // Explicitly add cost
-                if (!isset($productData['cost'])) {
-                    $productData['cost'] = $product->getData($costAttribute);
-                }
 
                 $productsArray[] = $productData;
             }

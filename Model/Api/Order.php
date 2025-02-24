@@ -231,10 +231,11 @@ class Order implements OrderSyncInterface
                     $itemExtension = $item->getExtensionAttributes();
                     $product = $this->productRepository->getById($item->getProductId());
 
-                    $item->setBaseCost($product->getData($costAttribute));
                     if ($itemExtension === null) {
                         $itemExtension = $this->itemExtensionFactory->create();
                     }
+
+                    $itemExtension->setCost($product->getData($costAttribute));
 
                     if ($productType === 'grouped') {
                         $productOptions = $item->getProductOptions();
@@ -279,8 +280,15 @@ class Order implements OrderSyncInterface
                         if ($orderItemExtension === null) {
                             $orderItemExtension = $this->itemExtensionFactory->create();
                         }
-                        $orderItems = $orderItemExtension->getOrderItem();
-                        $orderItems->setBaseCost($product->getData($costAttribute));
+                        $orderItem = $orderItemExtension->getOrderItem();
+                        $orderItemExtension->setCost($product->getData($costAttribute));
+
+                        $extenstionOrderItemExtension = $orderItem->getExtensionAttributes();
+                        if ($extenstionOrderItemExtension === null) {
+                            $extenstionOrderItemExtension = $this->itemExtensionFactory->create();
+                        }
+                        $extenstionOrderItemExtension->setCost($product->getData($costAttribute));
+
                     }
                 }
 
