@@ -214,7 +214,7 @@ class Order implements OrderSyncInterface
         }
 
         if($orderStart) {
-            $select->where('so.entity_id >= ?', $orderStart);
+            $select->where('so.entity_id > ?', $orderStart);
             $select->order('so.entity_id ASC');
         } else {
             $select->order('os.updated_at ASC');

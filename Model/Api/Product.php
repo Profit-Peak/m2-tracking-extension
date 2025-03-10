@@ -180,7 +180,7 @@ class Product implements ProductSyncInterface
             }
 
             if($productStart) {
-                $select->where('p.entity_id >= ?', $productStart);
+                $select->where('p.entity_id > ?', $productStart);
                 $select->order('p.entity_id ASC');
             } else {
                 $select->order('ps.updated_at ASC');
