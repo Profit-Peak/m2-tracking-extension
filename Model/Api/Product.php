@@ -86,6 +86,7 @@ class Product implements ProductSyncInterface
         $limit = $this->request->getParam('limit', 200);
         $all = $this->request->getParam('all', '0') == '1';
         $page = $this->request->getParam('page', 1);
+        $productStart = $this->request->getParam('productStart', null);
 
         if (!is_numeric($limit)) {
             return $this->helper->sendJsonResponse([
@@ -105,6 +106,12 @@ class Product implements ProductSyncInterface
             ], Exception::HTTP_BAD_REQUEST);
         }
 
+        if (!is_numeric($productStart) && $productStart !== null) {
+            return $this->helper->sendJsonResponse([
+                'message' => 'Product start required to be numeric',
+            ], Exception::HTTP_BAD_REQUEST);
+        }
+
         $limit = (int) $limit;
         $limit = $limit > Config::MAX_LIMIT ? Config::MAX_LIMIT : $limit;
 
@@ -112,7 +119,7 @@ class Product implements ProductSyncInterface
         $offset = ($page - 1 ) * $limit;
 
         // Fetch orders based on store_id, orderId, startDate, and endDate
-        $data = $this->executeGetData($store_id, $productId, $all, $limit, $offset);
+        $data = $this->executeGetData($store_id, $productId, $all, $limit, $offset, $productStart);
 
         return $this->helper->sendJsonResponse($data);
     }
@@ -126,7 +133,7 @@ class Product implements ProductSyncInterface
         return $this->helper->sendJsonResponse($data);
     }
 
-    public function executeGetData($store_id = null, $productId = null, $all = false, $limit = 200, $offset = 0)
+    public function executeGetData($store_id = null, $productId = null, $all = false, $limit = 200, $offset = 0, $productStart = null)
     {
         $version = $this->helper->getVersion();
         $data = ['version' => $version, 'data' => []];
@@ -162,8 +169,7 @@ class Product implements ProductSyncInterface
                     []
                 )
                 ->where('pw.website_id = ?', $websiteId)
-                ->limit($limit, $offset)
-                ->order('ps.updated_at ASC');
+                ->limit($limit, $offset);
 
             if ($productId) {
                 $select->where('p.entity_id = ?', $productId);
@@ -172,6 +178,14 @@ class Product implements ProductSyncInterface
             if (!$all) {
                 $select->where('ps.sent IS NULL OR ps.sent = ?', 0);
             }
+
+            if($productStart) {
+                $select->where('p.entity_id >= ?', $productStart);
+                $select->order('p.entity_id ASC');
+            } else {
+                $select->order('ps.updated_at ASC');
+            }
+
 
             $productIds = $connection->fetchCol($select);
 
