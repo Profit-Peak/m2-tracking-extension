@@ -11,7 +11,6 @@
 namespace ProfitPeak\Tracking\Cron;
 
 use Magento\Framework\Filesystem\Driver\File;
-use Psr\Log\LoggerInterface;
 
 class LogCleanup
 {
@@ -21,7 +20,6 @@ class LogCleanup
         File $file
     ) {
         $this->file = $file;
-        $this->logger = $logger;
     }
 
     public function execute()
